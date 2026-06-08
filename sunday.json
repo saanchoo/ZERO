@@ -1,0 +1,64 @@
+{
+  "name": "ZERO — Análisis Semanal Domingo",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "cronExpression","expression": "0 20 * * 0"}]}
+      },
+      "name": "Cron Domingo",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://hfivnuybvuxbysmmergd.supabase.co/rest/v1/daily_logs?select=*&order=date.desc&limit=7",
+        "options": {},
+        "headerParameters": {
+          "parameters": [
+            {"name": "apikey","value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTQwODI5NCwiZXhwIjoyMDY0OTg0Mjk0fQ.vJWn6AZQZd9b1swgRqFM"},
+            {"name": "Authorization","value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTQwODI5NCwiZXhwIjoyMDY0OTg0Mjk0fQ.vJWn6AZQZd9b1swgRqFM"}
+          ]
+        }
+      },
+      "name": "Leer Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-haiku-4-5-20251001",
+        "messages": {
+          "values": [{
+            "content": "=Eres ZERO, coach de fitness brutal y directo. Analiza estos datos de la última semana de Sergio y manda un resumen motivador en español: qué ha hecho bien, qué debe mejorar, y un reto concreto para la próxima semana. Sé conciso, máximo 5 frases. Datos: {{ JSON.stringify($json) }}"
+          }]
+        },
+        "options": {}
+      },
+      "name": "Claude Análisis",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [700, 300],
+      "credentials": {"anthropicApi": {"name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "chatId": "970015382",
+        "text": "=ZERO — Resumen Semanal\n\n{{ $json.content[0].text }}",
+        "additionalFields": {}
+      },
+      "name": "Telegram Resumen",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [920, 300],
+      "credentials": {"telegramApi": {"name": "Telegram account"}}
+    }
+  ],
+  "connections": {
+    "Cron Domingo": {"main": [[{"node": "Leer Supabase","type": "main","index": 0}]]},
+    "Leer Supabase": {"main": [[{"node": "Claude Análisis","type": "main","index": 0}]]},
+    "Claude Análisis": {"main": [[{"node": "Telegram Resumen","type": "main","index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

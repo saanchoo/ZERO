@@ -1,0 +1,30 @@
+{
+  "name": "ZERO — Peso 22:00",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "cronExpression","expression": "0 22 * * *"}]}
+      },
+      "name": "Cron 22:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "970015382",
+        "text": "Buenas noches 🌙\n\n¿Cuánto pesaste hoy? Entra en ZERO y regístralo.\n\nhttps://saanchoo.github.io/ZERO/",
+        "additionalFields": {}
+      },
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [480, 300],
+      "credentials": {"telegramApi": {"name": "Telegram account"}}
+    }
+  ],
+  "connections": {
+    "Cron 22:00": {"main": [[{"node": "Telegram","type": "main","index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

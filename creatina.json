@@ -1,0 +1,153 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9-22 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Cron cada hora 9-22",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "03bf0d7f-52b5-44e8-89f4-70247316be26"
+    },
+    {
+      "parameters": {
+        "url": "=https://hfivnuybvuxbysmmergd.supabase.co/rest/v1/daily_logs?select=check_creatine,date&date=eq.{{$now.format('yyyy-MM-dd')}}&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDkzMDc4MywiZXhwIjoyMDk2NTA2NzgzfQ.xPQbpSLNVlc0UxYx8YetF_NvJWn6AZQZd9b1swgRqFM"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDkzMDc4MywiZXhwIjoyMDk2NTA2NzgzfQ.xPQbpSLNVlc0UxYx8YetF_NvJWn6AZQZd9b1swgRqFM"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "name": "Check Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "12f5faeb-646e-493e-bea2-5984ee770f15"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json[0].check_creatine.toString()}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "1681a963-8856-4cea-95a7-8b81f2474fbd"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "¿Ya tomó?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "47dafbbb-da45-4c71-8782-c9f2d69f66bb"
+    },
+    {
+      "parameters": {
+        "chatId": "970015382",
+        "text": "=💊 Creatina pendiente — {{ $now.format('HH:mm') }}\n\nAún no has marcado la creatina hoy. No rompas la racha.\n\nhttps://saanchoo.github.io/ZERO/",
+        "additionalFields": {}
+      },
+      "name": "Telegram Recordatorio",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        112
+      ],
+      "id": "8a7eda04-0ea6-434a-b0eb-085d49688745",
+      "webhookId": "68617e40-4764-4857-a5d6-c4a94a3fc780",
+      "credentials": {
+        "telegramApi": {
+          "id": "h87eC7qy47vWZjvw",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron cada hora 9-22": {
+      "main": [
+        [
+          {
+            "node": "Check Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Supabase": {
+      "main": [
+        [
+          {
+            "node": "¿Ya tomó?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Ya tomó?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Telegram Recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "adb4c1a668cbf3ab49a96c58ce620bfd0da45e96ac246f4c45239595a77bcf13"
+  }
+}

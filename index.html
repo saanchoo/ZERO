@@ -499,14 +499,13 @@ async function toggleCheck(id) {
   renderToday();
   lucide.createIcons();
   if (currentUser) {
-    await sb.from('daily_logs').upsert({
-      user_id: currentUser.id, date: todayStr(),
-      check_creatine: !!ss.checks.creatine,
-      check_workout: !!ss.checks.workout,
-      check_weight: !!ss.checks.weight,
-      check_sleep: !!ss.checks.sleep,
-      check_calories: !!ss.checks.calories,
-    }, { onConflict:'user_id,date' });
+    const payload = { user_id: currentUser.id, date: todayStr() };
+    payload['check_' + id] = !!ss.checks[id];
+    const { data, error } = await sb
+      .from('daily_logs')
+      .upsert(payload, { onConflict: 'user_id,date' })
+      .select();
+    console.log('upsert result:', data, error);
   }
 }
 
