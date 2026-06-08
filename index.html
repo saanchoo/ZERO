@@ -391,18 +391,21 @@ function showAuthScreen() {
 }
 
 async function onLoginSuccess() {
-  await loadProfile();
   showApp();
+  loadProfile();
 }
 
 async function loadProfile() {
-  const { data } = await sb.from('profiles')
-    .select('claude_api_key').eq('id', currentUser.id).maybeSingle();
-  if (!data) {
-    await sb.from('profiles').insert({ id: currentUser.id });
+  try {
+    const { data } = await sb.from('profiles')
+      .select('claude_api_key').eq('id', currentUser.id).maybeSingle();
+    if (!data) {
+      sb.from('profiles').insert({ id: currentUser.id });
+    } else {
+      claudeApiKey = data.claude_api_key || null;
+    }
+  } catch(e) {
     claudeApiKey = null;
-  } else {
-    claudeApiKey = data.claude_api_key || null;
   }
 }
 
@@ -631,7 +634,7 @@ async function sendChat() {
   const input = document.getElementById('chat-input');
   const val = input.value.trim();
   if (!val) return;
-  if (!claudeApiKey) { addMsg('system','No API key. Tap the settings icon to add your Claude API key.'); return; }
+  if (!claudeApiKey) { addMsg('system','Set your Claude API key in settings to use ZERO AI.'); return; }
   addMsg('user', val);
   input.value = '';
   const btn = document.getElementById('chat-send-btn');
