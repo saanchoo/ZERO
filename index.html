@@ -10,693 +10,689 @@
 <title>ZERO</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{
---cream:#E8DCC8;
---card:#D4C4A8;
---dark:#1A1612;
---black:#0D0B09;
---text:#0D0B09;
---muted:#6B5C47;
---success:#3D2B1A;
+:root{--cream:#E8DCC8;--card:#D4C4A8;--dark:#1A1612;--black:#0D0B09;--muted:#6B5C47;--success:#3D2B1A;}
+html,body{height:100%;background:#E8DCC8;font-family:'Courier New',monospace;color:#0D0B09;overflow:hidden;}
+
+#auth-screen{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:#E8DCC8;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:1000;padding:40px 30px;
 }
-html,body{
-height:100%;
-background:#E8DCC8;
-font-family:'Courier New',monospace;
-color:#0D0B09;
-overflow:hidden;
+.auth-logo-img{width:180px;margin-bottom:40px;display:block;}
+.auth-form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px;}
+.auth-input{
+  background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:3px 3px 0px #0D0B09;
+  border-radius:4px;padding:14px 16px;font-family:'Courier New',monospace;
+  font-size:14px;font-weight:700;color:#0D0B09;outline:none;width:100%;
 }
-#app{
-max-width:430px;
-margin:0 auto;
-height:100vh;
-display:flex;
-flex-direction:column;
-position:relative;
-background:#E8DCC8;
+.auth-input::placeholder{color:#6B5C47;}
+.auth-input:focus{box-shadow:4px 4px 0px #0D0B09;}
+.auth-btn{
+  background:#0D0B09;color:#E8DCC8;border:none;border-radius:4px;padding:16px;
+  font-family:'Courier New',monospace;font-size:14px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;cursor:pointer;
+  box-shadow:3px 3px 0px #6B5C47;margin-top:4px;width:100%;
 }
-.screen{
-display:none;
-flex:1;
-overflow-y:auto;
-padding:20px 20px 90px;
+.auth-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0px #6B5C47;}
+.auth-btn:disabled{opacity:0.5;cursor:default;transform:none;box-shadow:3px 3px 0px #6B5C47;}
+.auth-error{font-size:11px;color:#6B5C47;text-align:center;letter-spacing:1px;min-height:16px;font-weight:700;}
+
+#app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column;position:relative;background:#E8DCC8;}
+.app-header{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;height:48px;
+  background:#E8DCC8;border-bottom:1.5px solid #0D0B09;
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:99;
 }
+.app-header-logo{font-size:16px;font-weight:700;letter-spacing:10px;color:#0D0B09;}
+.logout-btn{background:none;border:none;cursor:pointer;color:#6B5C47;display:flex;align-items:center;padding:8px;}
+.logout-btn svg{width:18px;height:18px;}
+.logout-btn:active{color:#0D0B09;}
+
+.screen{display:none;flex:1;overflow-y:auto;padding:68px 20px 90px;}
 .screen.active{display:block;}
-.card{
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-box-shadow:3px 3px 0px #0D0B09;
-border-radius:4px;
-padding:20px;
-margin-bottom:16px;
-}
-.date-header{
-font-size:28px;
-font-weight:700;
-letter-spacing:4px;
-text-transform:uppercase;
-margin-bottom:20px;
-}
+.card{background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:3px 3px 0px #0D0B09;border-radius:4px;padding:20px;margin-bottom:16px;}
+.date-header{font-size:28px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;}
 .streak-box{
-display:flex;
-align-items:center;
-gap:12px;
-padding:16px 20px;
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-box-shadow:3px 3px 0px #0D0B09;
-border-radius:4px;
-margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;padding:16px 20px;
+  background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:3px 3px 0px #0D0B09;
+  border-radius:4px;margin-bottom:16px;
 }
-.streak-icon{
-color:#0D0B09;
-display:flex;
-align-items:center;
-}
+.streak-icon{color:#0D0B09;display:flex;align-items:center;}
 .streak-icon svg{width:32px;height:32px;}
-.streak-num{
-font-size:48px;
-font-weight:700;
-line-height:1;
-}
-.streak-label{
-font-size:12px;
-font-weight:700;
-letter-spacing:3px;
-color:#6B5C47;
-text-transform:uppercase;
-}
-@keyframes pulse{
-0%,100%{transform:scale(1);}
-50%{transform:scale(1.15);}
-}
+.streak-num{font-size:48px;font-weight:700;line-height:1;}
+.streak-label{font-size:12px;font-weight:700;letter-spacing:3px;color:#6B5C47;text-transform:uppercase;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 .pulse .streak-icon{animation:pulse 0.8s ease-in-out infinite;}
 .checklist{margin-bottom:16px;}
 .check-item{
-display:flex;
-align-items:center;
-gap:14px;
-min-height:56px;
-padding:12px 20px;
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-box-shadow:3px 3px 0px #0D0B09;
-border-radius:4px;
-margin-bottom:10px;
-cursor:pointer;
-user-select:none;
-transition:background 0.15s;
+  display:flex;align-items:center;gap:14px;min-height:56px;padding:12px 20px;
+  background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:3px 3px 0px #0D0B09;
+  border-radius:4px;margin-bottom:10px;cursor:pointer;user-select:none;transition:background 0.15s;
 }
-.check-item.done{
-background:#3D2B1A;
-color:#E8DCC8;
-}
-.check-item.done .check-label{
-text-decoration:line-through;
-color:#D4C4A8;
-}
+.check-item.done{background:#3D2B1A;color:#E8DCC8;}
+.check-item.done .check-label{text-decoration:line-through;color:#D4C4A8;}
 .check-item.done .item-icon svg{color:#E8DCC8;}
 .item-icon{display:flex;align-items:center;}
 .item-icon svg{width:20px;height:20px;color:#0D0B09;}
-.check-label{
-font-size:14px;
-font-weight:700;
-letter-spacing:2px;
-text-transform:uppercase;
-flex:1;
-}
-.check-mark{
-width:24px;height:24px;
-border:1.5px solid currentColor;
-border-radius:2px;
-display:flex;align-items:center;justify-content:center;
-flex-shrink:0;
-}
+.check-label{font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;flex:1;}
+.check-mark{width:24px;height:24px;border:1.5px solid currentColor;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .check-mark svg{width:14px;height:14px;display:none;}
 .check-item.done .check-mark svg{display:block;}
-.progress-section{
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-box-shadow:3px 3px 0px #0D0B09;
-border-radius:4px;
-padding:16px 20px;
-}
-.progress-label{
-display:flex;
-justify-content:space-between;
-font-size:12px;
-font-weight:700;
-letter-spacing:3px;
-color:#6B5C47;
-margin-bottom:10px;
-text-transform:uppercase;
-}
-.progress-track{
-height:8px;
-background:#0D0B09;
-border-radius:2px;
-overflow:hidden;
-}
-.progress-fill{
-height:100%;
-background:#E8DCC8;
-border-radius:2px;
-transition:width 0.3s ease;
-}
-.section-title{
-font-size:11px;
-font-weight:700;
-letter-spacing:4px;
-color:#6B5C47;
-text-transform:uppercase;
-margin-bottom:12px;
-}
-.input-row{
-display:flex;
-gap:10px;
-margin-bottom:10px;
-}
-.input-group{
-display:flex;
-flex-direction:column;
-flex:1;
-gap:4px;
-}
-.input-group label{
-font-size:10px;
-font-weight:700;
-letter-spacing:3px;
-color:#6B5C47;
-text-transform:uppercase;
-}
-.input-group input{
-background:#E8DCC8;
-border:1.5px solid #0D0B09;
-border-radius:4px;
-padding:10px 12px;
-font-family:'Courier New',monospace;
-font-size:15px;
-font-weight:700;
-color:#0D0B09;
-width:100%;
-outline:none;
-}
+.progress-section{background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:3px 3px 0px #0D0B09;border-radius:4px;padding:16px 20px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:3px;color:#6B5C47;margin-bottom:10px;text-transform:uppercase;}
+.progress-track{height:8px;background:#0D0B09;border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:#E8DCC8;border-radius:2px;transition:width 0.3s ease;}
+
+.section-title{font-size:11px;font-weight:700;letter-spacing:4px;color:#6B5C47;text-transform:uppercase;margin-bottom:12px;}
+.input-row{display:flex;gap:10px;margin-bottom:10px;}
+.input-group{display:flex;flex-direction:column;flex:1;gap:4px;}
+.input-group label{font-size:10px;font-weight:700;letter-spacing:3px;color:#6B5C47;text-transform:uppercase;}
+.input-group input{background:#E8DCC8;border:1.5px solid #0D0B09;border-radius:4px;padding:10px 12px;font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:#0D0B09;width:100%;outline:none;}
 .input-group input:focus{box-shadow:2px 2px 0px #0D0B09;}
-.exercise-input{
-background:#E8DCC8;
-border:1.5px solid #0D0B09;
-border-radius:4px;
-padding:10px 12px;
-font-family:'Courier New',monospace;
-font-size:15px;
-font-weight:700;
-color:#0D0B09;
-width:100%;
-outline:none;
-margin-bottom:12px;
-}
+.exercise-input{background:#E8DCC8;border:1.5px solid #0D0B09;border-radius:4px;padding:10px 12px;font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:#0D0B09;width:100%;outline:none;margin-bottom:12px;}
 .exercise-input:focus{box-shadow:2px 2px 0px #0D0B09;}
 .sets-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
-.sets-table th{
-font-size:10px;
-font-weight:700;
-letter-spacing:2px;
-color:#6B5C47;
-text-transform:uppercase;
-padding:6px 8px;
-text-align:left;
-border-bottom:1.5px solid #0D0B09;
-}
-.sets-table td{
-padding:6px 8px;
-}
-.sets-table td input{
-background:#E8DCC8;
-border:1.5px solid #0D0B09;
-border-radius:2px;
-padding:6px 8px;
-font-family:'Courier New',monospace;
-font-size:14px;
-font-weight:700;
-color:#0D0B09;
-width:100%;
-outline:none;
-}
-.set-num{
-font-size:12px;
-font-weight:700;
-color:#6B5C47;
-}
-.add-set-btn{
-display:flex;
-align-items:center;
-gap:8px;
-background:none;
-border:1.5px dashed #0D0B09;
-border-radius:4px;
-padding:10px 16px;
-font-family:'Courier New',monospace;
-font-size:12px;
-font-weight:700;
-letter-spacing:2px;
-color:#6B5C47;
-cursor:pointer;
-text-transform:uppercase;
-width:100%;
-justify-content:center;
-}
+.sets-table th{font-size:10px;font-weight:700;letter-spacing:2px;color:#6B5C47;text-transform:uppercase;padding:6px 8px;text-align:left;border-bottom:1.5px solid #0D0B09;}
+.sets-table td{padding:6px 8px;}
+.sets-table td input{background:#E8DCC8;border:1.5px solid #0D0B09;border-radius:2px;padding:6px 8px;font-family:'Courier New',monospace;font-size:14px;font-weight:700;color:#0D0B09;width:100%;outline:none;}
+.set-num{font-size:12px;font-weight:700;color:#6B5C47;}
+.add-set-btn{display:flex;align-items:center;gap:8px;background:none;border:1.5px dashed #0D0B09;border-radius:4px;padding:10px 16px;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:2px;color:#6B5C47;cursor:pointer;text-transform:uppercase;width:100%;justify-content:center;}
 .add-set-btn svg{width:14px;height:14px;}
 .add-set-btn:hover{background:#E8DCC8;}
-.save-btn{
-position:fixed;
-bottom:72px;
-left:50%;
-transform:translateX(-50%);
-width:calc(100% - 40px);
-max-width:390px;
-background:#0D0B09;
-color:#E8DCC8;
-border:none;
-border-radius:4px;
-padding:16px;
-font-family:'Courier New',monospace;
-font-size:14px;
-font-weight:700;
-letter-spacing:4px;
-text-transform:uppercase;
-cursor:pointer;
-box-shadow:3px 3px 0px #6B5C47;
-}
+.save-btn{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:390px;background:#0D0B09;color:#E8DCC8;border:none;border-radius:4px;padding:16px;font-family:'Courier New',monospace;font-size:14px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0px #6B5C47;}
 .save-btn:active{transform:translateX(-50%) translate(2px,2px);box-shadow:1px 1px 0px #6B5C47;}
-.stats-placeholder{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-height:60vh;
-gap:16px;
-}
-.stats-placeholder svg{width:64px;height:64px;color:#6B5C47;}
-.stats-placeholder .coming-soon{
-font-size:24px;
-font-weight:700;
-letter-spacing:6px;
-color:#6B5C47;
-text-transform:uppercase;
-}
-.chat-container{
-display:flex;
-flex-direction:column;
-height:calc(100vh - 72px);
-padding:0;
-}
-.chat-messages{
-flex:1;
-overflow-y:auto;
-padding:20px 20px 0;
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-.chat-message{
-max-width:80%;
-padding:12px 14px;
-border-radius:4px;
-font-size:13px;
-line-height:1.5;
-font-weight:600;
-}
-.chat-message.system{
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-box-shadow:2px 2px 0px #0D0B09;
-align-self:flex-start;
-}
-.chat-message.user-msg{
-background:#0D0B09;
-color:#E8DCC8;
-border:1.5px solid #0D0B09;
-box-shadow:2px 2px 0px #6B5C47;
-align-self:flex-end;
-}
-.chat-input-bar{
-display:flex;
-gap:10px;
-padding:12px 20px;
-background:#E8DCC8;
-border-top:1.5px solid #0D0B09;
-}
-.chat-input{
-flex:1;
-background:#D4C4A8;
-border:1.5px solid #0D0B09;
-border-radius:4px;
-padding:10px 14px;
-font-family:'Courier New',monospace;
-font-size:14px;
-font-weight:600;
-color:#0D0B09;
-outline:none;
-}
+.save-btn:disabled{opacity:0.5;cursor:default;}
+
+.stats-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40vh;gap:16px;}
+.stats-placeholder svg{width:48px;height:48px;color:#6B5C47;}
+.stats-placeholder .label{font-size:16px;font-weight:700;letter-spacing:6px;color:#6B5C47;text-transform:uppercase;}
+.stats-metrics{display:flex;gap:10px;margin-bottom:0;}
+.metric-card{flex:1;background:#E8DCC8;border:1.5px solid #0D0B09;box-shadow:2px 2px 0px #0D0B09;border-radius:4px;padding:14px 8px;text-align:center;}
+.metric-value{font-size:22px;font-weight:700;color:#0D0B09;line-height:1;margin-bottom:4px;}
+.metric-label{font-size:9px;font-weight:700;letter-spacing:2px;color:#6B5C47;text-transform:uppercase;}
+.chart-bars{display:flex;align-items:flex-end;height:80px;gap:3px;border-bottom:1.5px solid #0D0B09;margin-top:4px;}
+.chart-bar-el{flex:1;border-radius:2px 2px 0 0;background:#0D0B09;min-height:2px;}
+.chart-bar-el.empty{background:transparent;border:1px dashed #C4B49A;}
+.chart-labels{display:flex;gap:3px;margin-top:4px;}
+.chart-label-el{flex:1;font-size:7px;font-weight:700;color:#6B5C47;text-align:center;overflow:hidden;}
+.workout-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #C4B49A;}
+.workout-row:last-child{border-bottom:none;}
+.workout-name{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#0D0B09;}
+.workout-meta{font-size:10px;color:#6B5C47;font-weight:700;letter-spacing:1px;}
+
+.chat-container{display:none;flex-direction:column;height:calc(100vh - 120px);margin-top:48px;}
+.ai-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1.5px solid #0D0B09;background:#E8DCC8;flex-shrink:0;}
+.ai-title{font-size:11px;font-weight:700;letter-spacing:4px;color:#0D0B09;text-transform:uppercase;}
+.ai-settings-btn{background:none;border:none;cursor:pointer;color:#6B5C47;display:flex;align-items:center;padding:4px;}
+.ai-settings-btn svg{width:16px;height:16px;}
+.ai-settings-btn:active{color:#0D0B09;}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
+.chat-message{max-width:82%;padding:12px 14px;border-radius:4px;font-size:13px;line-height:1.5;font-weight:600;}
+.chat-message.system{background:#D4C4A8;border:1.5px solid #0D0B09;box-shadow:2px 2px 0px #0D0B09;align-self:flex-start;}
+.chat-message.user-msg{background:#0D0B09;color:#E8DCC8;border:1.5px solid #0D0B09;box-shadow:2px 2px 0px #6B5C47;align-self:flex-end;}
+.chat-input-bar{display:flex;gap:10px;padding:12px 20px;background:#E8DCC8;border-top:1.5px solid #0D0B09;flex-shrink:0;}
+.chat-input{flex:1;background:#D4C4A8;border:1.5px solid #0D0B09;border-radius:4px;padding:10px 14px;font-family:'Courier New',monospace;font-size:14px;font-weight:600;color:#0D0B09;outline:none;}
 .chat-input:focus{box-shadow:2px 2px 0px #0D0B09;}
-.chat-send{
-background:#0D0B09;
-color:#E8DCC8;
-border:none;
-border-radius:4px;
-width:44px;
-height:44px;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-flex-shrink:0;
-}
+.chat-send{background:#0D0B09;color:#E8DCC8;border:none;border-radius:4px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .chat-send svg{width:18px;height:18px;}
 .chat-send:active{opacity:0.7;}
-.bottom-nav{
-position:fixed;
-bottom:0;
-left:50%;
-transform:translateX(-50%);
-width:100%;
-max-width:430px;
-height:72px;
-background:#1A1612;
-border-top:1.5px solid #0D0B09;
-display:flex;
-z-index:100;
+.chat-send:disabled{opacity:0.4;cursor:default;}
+
+#settings-modal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(13,11,9,0.55);}
+.modal-box{
+  position:relative;background:#E8DCC8;border:1.5px solid #0D0B09;
+  box-shadow:4px 4px 0px #0D0B09;border-radius:4px;padding:24px;
+  width:calc(100% - 60px);max-width:360px;z-index:1;
 }
-.nav-tab{
-flex:1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:4px;
-cursor:pointer;
-color:#6B5C47;
-border:none;
-background:none;
-font-family:'Courier New',monospace;
-padding:8px 0;
-transition:color 0.15s;
+.modal-title{font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;}
+.modal-label{font-size:9px;font-weight:700;letter-spacing:3px;color:#6B5C47;text-transform:uppercase;margin-bottom:6px;}
+.modal-current{font-size:12px;color:#6B5C47;font-weight:700;margin-bottom:14px;letter-spacing:1px;}
+.modal-input{
+  background:#D4C4A8;border:1.5px solid #0D0B09;border-radius:4px;
+  padding:11px 14px;font-family:'Courier New',monospace;font-size:13px;
+  font-weight:700;color:#0D0B09;outline:none;width:100%;margin-bottom:12px;
 }
+.modal-input:focus{box-shadow:2px 2px 0px #0D0B09;}
+.modal-input::placeholder{color:#6B5C47;}
+.modal-actions{display:flex;gap:10px;}
+.modal-save{flex:1;background:#0D0B09;color:#E8DCC8;border:none;border-radius:4px;padding:12px;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;}
+.modal-cancel{flex:1;background:none;color:#6B5C47;border:1.5px solid #6B5C47;border-radius:4px;padding:12px;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;}
+
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:72px;background:#1A1612;border-top:1.5px solid #0D0B09;display:flex;z-index:100;}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:#6B5C47;border:none;background:none;font-family:'Courier New',monospace;padding:8px 0;transition:color 0.15s;}
 .nav-tab.active{color:#E8DCC8;}
 .nav-tab svg{width:22px;height:22px;}
-.nav-tab span{
-font-size:9px;
-font-weight:700;
-letter-spacing:2px;
-text-transform:uppercase;
-}
+.nav-tab span{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
 </style>
 </head>
 <body>
-<div id="app">
 
-<div id="screen-today" class="screen active">
-  <div id="date-header" class="date-header"></div>
-  <div class="streak-box" id="streak-box">
-    <div class="streak-icon"><i data-lucide="flame"></i></div>
-    <div>
-      <div class="streak-num" id="streak-num">0</div>
-      <div class="streak-label">days</div>
-    </div>
-  </div>
-  <div class="checklist" id="checklist">
-    <div class="check-item" data-id="creatine" onclick="toggleCheck('creatine')">
-      <div class="item-icon"><i data-lucide="zap"></i></div>
-      <span class="check-label">Creatine</span>
-      <div class="check-mark"><i data-lucide="check"></i></div>
-    </div>
-    <div class="check-item" data-id="workout" onclick="toggleCheck('workout')">
-      <div class="item-icon"><i data-lucide="dumbbell"></i></div>
-      <span class="check-label">Workout</span>
-      <div class="check-mark"><i data-lucide="check"></i></div>
-    </div>
-    <div class="check-item" data-id="weight" onclick="toggleCheck('weight')">
-      <div class="item-icon"><i data-lucide="scale"></i></div>
-      <span class="check-label">Weight</span>
-      <div class="check-mark"><i data-lucide="check"></i></div>
-    </div>
-    <div class="check-item" data-id="sleep" onclick="toggleCheck('sleep')">
-      <div class="item-icon"><i data-lucide="moon"></i></div>
-      <span class="check-label">Sleep</span>
-      <div class="check-mark"><i data-lucide="check"></i></div>
-    </div>
-    <div class="check-item" data-id="calories" onclick="toggleCheck('calories')">
-      <div class="item-icon"><i data-lucide="utensils"></i></div>
-      <span class="check-label">Calories</span>
-      <div class="check-mark"><i data-lucide="check"></i></div>
-    </div>
-  </div>
-  <div class="progress-section">
-    <div class="progress-label">
-      <span>PROGRESS</span>
-      <span id="progress-text">0 / 5</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    </div>
+<div id="auth-screen">
+  <img src="assets/logo-dark.png" alt="ZERO" class="auth-logo-img">
+  <div class="auth-form">
+    <input type="email" class="auth-input" id="auth-email" placeholder="EMAIL" autocomplete="email"
+      onkeydown="if(event.key==='Enter')document.getElementById('auth-password').focus()">
+    <input type="password" class="auth-input" id="auth-password" placeholder="PASSWORD" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')login()">
+    <div class="auth-error" id="auth-error"></div>
+    <button class="auth-btn" id="login-btn" onclick="login()">LOGIN</button>
   </div>
 </div>
 
-<div id="screen-log" class="screen">
-  <div class="card">
-    <div class="section-title">Body</div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>Weight (kg)</label>
-        <input type="number" id="log-weight" placeholder="0.0" step="0.1">
-      </div>
-      <div class="input-group">
-        <label>Sleep (h)</label>
-        <input type="number" id="log-sleep" placeholder="0.0" step="0.5">
-      </div>
-    </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>Calories (kcal)</label>
-        <input type="number" id="log-calories" placeholder="0">
-      </div>
-      <div class="input-group">
-        <label>Protein (g)</label>
-        <input type="number" id="log-protein" placeholder="0">
+<div id="app" style="display:none;">
+
+  <div class="app-header">
+    <span class="app-header-logo">ZERO</span>
+    <button class="logout-btn" onclick="logout()"><i data-lucide="log-out"></i></button>
+  </div>
+
+  <div id="screen-today" class="screen active">
+    <div id="date-header" class="date-header"></div>
+    <div class="streak-box" id="streak-box">
+      <div class="streak-icon"><i data-lucide="flame"></i></div>
+      <div>
+        <div class="streak-num" id="streak-num">0</div>
+        <div class="streak-label">days</div>
       </div>
     </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>Carbs (g)</label>
-        <input type="number" id="log-carbs" placeholder="0">
+    <div class="checklist">
+      <div class="check-item" data-id="creatine" onclick="toggleCheck('creatine')">
+        <div class="item-icon"><i data-lucide="zap"></i></div>
+        <span class="check-label">Creatine</span>
+        <div class="check-mark"><i data-lucide="check"></i></div>
       </div>
-      <div class="input-group">
-        <label>Fat (g)</label>
-        <input type="number" id="log-fat" placeholder="0">
+      <div class="check-item" data-id="workout" onclick="toggleCheck('workout')">
+        <div class="item-icon"><i data-lucide="dumbbell"></i></div>
+        <span class="check-label">Workout</span>
+        <div class="check-mark"><i data-lucide="check"></i></div>
+      </div>
+      <div class="check-item" data-id="weight" onclick="toggleCheck('weight')">
+        <div class="item-icon"><i data-lucide="scale"></i></div>
+        <span class="check-label">Weight</span>
+        <div class="check-mark"><i data-lucide="check"></i></div>
+      </div>
+      <div class="check-item" data-id="sleep" onclick="toggleCheck('sleep')">
+        <div class="item-icon"><i data-lucide="moon"></i></div>
+        <span class="check-label">Sleep</span>
+        <div class="check-mark"><i data-lucide="check"></i></div>
+      </div>
+      <div class="check-item" data-id="calories" onclick="toggleCheck('calories')">
+        <div class="item-icon"><i data-lucide="utensils"></i></div>
+        <span class="check-label">Calories</span>
+        <div class="check-mark"><i data-lucide="check"></i></div>
+      </div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>PROGRESS</span>
+        <span id="progress-text">0 / 5</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
       </div>
     </div>
   </div>
-  <div class="card" style="margin-bottom:80px;">
-    <div class="section-title">Workout</div>
-    <input type="text" class="exercise-input" id="log-exercise" placeholder="EXERCISE NAME">
-    <table class="sets-table" id="sets-table">
-      <thead>
-        <tr>
-          <th>SET</th>
-          <th>REPS</th>
-          <th>KG</th>
-        </tr>
-      </thead>
-      <tbody id="sets-body">
-        <tr>
-          <td><span class="set-num">1</span></td>
-          <td><input type="number" placeholder="0" min="0"></td>
-          <td><input type="number" placeholder="0" step="0.5" min="0"></td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="add-set-btn" onclick="addSet()">
-      <i data-lucide="plus"></i>
-      ADD SET
+
+  <div id="screen-log" class="screen">
+    <div class="card">
+      <div class="section-title">Body</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Weight (kg)</label>
+          <input type="number" id="log-weight" placeholder="0.0" step="0.1">
+        </div>
+        <div class="input-group">
+          <label>Sleep (h)</label>
+          <input type="number" id="log-sleep" placeholder="0.0" step="0.5">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Calories (kcal)</label>
+          <input type="number" id="log-calories" placeholder="0">
+        </div>
+        <div class="input-group">
+          <label>Protein (g)</label>
+          <input type="number" id="log-protein" placeholder="0">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Carbs (g)</label>
+          <input type="number" id="log-carbs" placeholder="0">
+        </div>
+        <div class="input-group">
+          <label>Fat (g)</label>
+          <input type="number" id="log-fat" placeholder="0">
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:100px;">
+      <div class="section-title">Workout</div>
+      <input type="text" class="exercise-input" id="log-exercise" placeholder="EXERCISE NAME">
+      <table class="sets-table">
+        <thead><tr><th>SET</th><th>REPS</th><th>KG</th></tr></thead>
+        <tbody id="sets-body">
+          <tr>
+            <td><span class="set-num">1</span></td>
+            <td><input type="number" placeholder="0" min="0"></td>
+            <td><input type="number" placeholder="0" step="0.5" min="0"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="add-set-btn" onclick="addSet()">
+        <i data-lucide="plus"></i>ADD SET
+      </button>
+    </div>
+    <button class="save-btn" id="save-btn" onclick="saveLog()">SAVE</button>
+  </div>
+
+  <div id="screen-stats" class="screen">
+    <div id="stats-content">
+      <div class="stats-placeholder">
+        <i data-lucide="bar-chart-2"></i>
+        <div class="label">LOADING</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-ai" class="chat-container">
+    <div class="ai-header">
+      <span class="ai-title">ZERO AI</span>
+      <button class="ai-settings-btn" onclick="openSettingsModal()"><i data-lucide="settings"></i></button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-message system">ZERO AI — connect your Claude API key in settings to activate.</div>
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" class="chat-input" id="chat-input" placeholder="ASK ZERO AI..."
+        onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" id="chat-send-btn" onclick="sendChat()"><i data-lucide="send"></i></button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-tab active" onclick="showTab('today',this)">
+      <i data-lucide="home"></i><span>Today</span>
     </button>
-  </div>
-  <button class="save-btn" onclick="saveLog()">SAVE</button>
-</div>
-
-<div id="screen-stats" class="screen">
-  <div class="stats-placeholder">
-    <i data-lucide="bar-chart-2"></i>
-    <div class="coming-soon">Coming Soon</div>
-  </div>
-</div>
-
-<div id="screen-ai" class="chat-container" style="display:none;">
-  <div class="chat-messages" id="chat-messages">
-    <div class="chat-message system">ZERO AI — connect your API to activate daily analysis.</div>
-  </div>
-  <div class="chat-input-bar">
-    <input type="text" class="chat-input" id="chat-input" placeholder="ASK ZERO AI..." onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="chat-send" onclick="sendChat()"><i data-lucide="send"></i></button>
-  </div>
-</div>
-
-<nav class="bottom-nav">
-  <button class="nav-tab active" onclick="showTab('today',this)">
-    <i data-lucide="home"></i>
-    <span>Today</span>
-  </button>
-  <button class="nav-tab" onclick="showTab('log',this)">
-    <i data-lucide="dumbbell"></i>
-    <span>Log</span>
-  </button>
-  <button class="nav-tab" onclick="showTab('stats',this)">
-    <i data-lucide="bar-chart-2"></i>
-    <span>Stats</span>
-  </button>
-  <button class="nav-tab" onclick="showTab('ai',this)">
-    <i data-lucide="message-square"></i>
-    <span>AI</span>
-  </button>
-</nav>
+    <button class="nav-tab" onclick="showTab('log',this)">
+      <i data-lucide="dumbbell"></i><span>Log</span>
+    </button>
+    <button class="nav-tab" onclick="showTab('stats',this)">
+      <i data-lucide="bar-chart-2"></i><span>Stats</span>
+    </button>
+    <button class="nav-tab" onclick="showTab('ai',this)">
+      <i data-lucide="message-square"></i><span>AI</span>
+    </button>
+  </nav>
 
 </div>
 
+<div id="settings-modal">
+  <div class="modal-overlay" onclick="closeSettingsModal()"></div>
+  <div class="modal-box">
+    <div class="modal-title">API Settings</div>
+    <div class="modal-label">Current Key</div>
+    <div class="modal-current" id="modal-current-key">Not set</div>
+    <div class="modal-label">New Key</div>
+    <input type="password" class="modal-input" id="modal-key-input" placeholder="sk-ant-...">
+    <div class="modal-actions">
+      <button class="modal-save" onclick="saveApiKeyModal()">SAVE</button>
+      <button class="modal-cancel" onclick="closeSettingsModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
+const SUPABASE_URL = 'https://hfivnuybvuxbysmmergd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0MDgyOTQsImV4cCI6MjA2NDk4NDI5NH0.aTgkKHTv99SUTqRZ5nQ5tGWFmKuol1PMqvSalIk6vJE';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const ITEMS = ['creatine','workout','weight','sleep','calories'];
 const DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
-function todayStr(){
-  const d=new Date();
-  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+let currentUser = null;
+let claudeApiKey = null;
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-function formatDate(){
-  const d=new Date();
-  const day=DAYS[d.getDay()];
-  const date=String(d.getDate()).padStart(2,'0');
-  const month=MONTHS[d.getMonth()];
-  return day+' '+date+' '+month;
+function nDaysAgo(n) {
+  const d = new Date();
+  d.setDate(d.getDate()-n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-function loadState(){
-  const saved=localStorage.getItem('zero_state');
-  if(!saved)return{date:'',checks:{},streak:0,streakDone:false};
-  return JSON.parse(saved);
+function formatDate() {
+  const d = new Date();
+  return DAYS[d.getDay()]+' '+String(d.getDate()).padStart(2,'0')+' '+MONTHS[d.getMonth()];
 }
 
-function saveState(state){
-  localStorage.setItem('zero_state',JSON.stringify(state));
+async function init() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) { currentUser = session.user; await onLoginSuccess(); }
+    else showAuthScreen();
+  } catch(e) { showAuthScreen(); }
 }
 
-let state=loadState();
-if(state.date!==todayStr()){
-  state={date:todayStr(),checks:{},streak:state.streak,streakDone:false};
-  saveState(state);
+function showAuthScreen() {
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  lucide.createIcons();
 }
 
-function renderToday(){
-  document.getElementById('date-header').textContent=formatDate();
-  document.getElementById('streak-num').textContent=state.streak;
-  ITEMS.forEach(id=>{
-    const el=document.querySelector('.check-item[data-id="'+id+'"]');
-    if(state.checks[id]){
-      el.classList.add('done');
-    } else {
-      el.classList.remove('done');
-    }
-  });
-  const done=ITEMS.filter(id=>state.checks[id]).length;
-  document.getElementById('progress-text').textContent=done+' / 5';
-  document.getElementById('progress-fill').style.width=(done/5*100)+'%';
-  const box=document.getElementById('streak-box');
-  if(done===5){
-    box.classList.add('pulse');
+async function onLoginSuccess() {
+  await loadProfile();
+  showApp();
+}
+
+async function loadProfile() {
+  const { data } = await sb.from('profiles')
+    .select('claude_api_key').eq('id', currentUser.id).maybeSingle();
+  if (!data) {
+    await sb.from('profiles').insert({ id: currentUser.id });
+    claudeApiKey = null;
   } else {
-    box.classList.remove('pulse');
+    claudeApiKey = data.claude_api_key || null;
   }
 }
 
-function toggleCheck(id){
-  state.checks[id]=!state.checks[id];
-  const done=ITEMS.filter(i=>state.checks[i]).length;
-  if(done===5&&!state.streakDone){
-    state.streak+=1;
-    state.streakDone=true;
+function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  initToday();
+  lucide.createIcons();
+}
+
+async function login() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pw = document.getElementById('auth-password').value;
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('auth-error');
+  if (!email || !pw) { errEl.textContent = 'Enter email and password.'; return; }
+  btn.textContent = 'SIGNING IN...'; btn.disabled = true; errEl.textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  btn.textContent = 'LOGIN'; btn.disabled = false;
+  if (error) { errEl.textContent = error.message; }
+  else { currentUser = data.user; await onLoginSuccess(); }
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = null; claudeApiKey = null;
+  showAuthScreen();
+}
+
+function loadStreak() {
+  const s = localStorage.getItem('zero_state');
+  return s ? JSON.parse(s) : { date:'', checks:{}, streak:0, streakDone:false };
+}
+
+function saveStreak(s) { localStorage.setItem('zero_state', JSON.stringify(s)); }
+
+let ss = {};
+
+async function initToday() {
+  ss = loadStreak();
+  if (ss.date !== todayStr()) {
+    ss = { date:todayStr(), checks:{}, streak:ss.streak, streakDone:false };
+    saveStreak(ss);
   }
-  saveState(state);
+  if (currentUser) {
+    const { data } = await sb.from('daily_logs')
+      .select('check_creatine,check_workout,check_weight,check_sleep,check_calories,weight,sleep_hours,calories,protein,carbs,fat')
+      .eq('user_id', currentUser.id).eq('date', todayStr()).maybeSingle();
+    if (data) {
+      ITEMS.forEach(id => { if (data['check_'+id]) ss.checks[id] = true; });
+      document.getElementById('log-weight').value = data.weight ?? '';
+      document.getElementById('log-sleep').value = data.sleep_hours ?? '';
+      document.getElementById('log-calories').value = data.calories ?? '';
+      document.getElementById('log-protein').value = data.protein ?? '';
+      document.getElementById('log-carbs').value = data.carbs ?? '';
+      document.getElementById('log-fat').value = data.fat ?? '';
+    }
+  }
   renderToday();
   lucide.createIcons();
 }
 
-function showTab(name,btn){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('#screen-ai').forEach(s=>s.style.display='none');
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  if(name==='ai'){
-    document.getElementById('screen-ai').style.display='flex';
-  } else {
-    const s=document.getElementById('screen-'+name);
-    s.classList.add('active');
+function renderToday() {
+  document.getElementById('date-header').textContent = formatDate();
+  document.getElementById('streak-num').textContent = ss.streak;
+  ITEMS.forEach(id => {
+    document.querySelector('.check-item[data-id="'+id+'"]').classList.toggle('done', !!ss.checks[id]);
+  });
+  const done = ITEMS.filter(id => ss.checks[id]).length;
+  document.getElementById('progress-text').textContent = done+' / 5';
+  document.getElementById('progress-fill').style.width = (done/5*100)+'%';
+  document.getElementById('streak-box').classList.toggle('pulse', done===5);
+}
+
+async function toggleCheck(id) {
+  if (ss.date !== todayStr()) ss = { date:todayStr(), checks:{}, streak:ss.streak, streakDone:false };
+  ss.checks[id] = !ss.checks[id];
+  if (ITEMS.filter(i=>ss.checks[i]).length===5 && !ss.streakDone) { ss.streak++; ss.streakDone=true; }
+  saveStreak(ss);
+  renderToday();
+  lucide.createIcons();
+  if (currentUser) {
+    await sb.from('daily_logs').upsert({
+      user_id: currentUser.id, date: todayStr(),
+      check_creatine: !!ss.checks.creatine,
+      check_workout: !!ss.checks.workout,
+      check_weight: !!ss.checks.weight,
+      check_sleep: !!ss.checks.sleep,
+      check_calories: !!ss.checks.calories,
+    }, { onConflict:'user_id,date' });
   }
 }
 
-let setCount=1;
-function addSet(){
+let setCount = 1;
+function addSet() {
   setCount++;
-  const tbody=document.getElementById('sets-body');
-  const tr=document.createElement('tr');
-  tr.innerHTML='<td><span class="set-num">'+setCount+'</span></td><td><input type="number" placeholder="0" min="0"></td><td><input type="number" placeholder="0" step="0.5" min="0"></td>';
-  tbody.appendChild(tr);
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td><span class="set-num">'+setCount+'</span></td>'
+    +'<td><input type="number" placeholder="0" min="0"></td>'
+    +'<td><input type="number" placeholder="0" step="0.5" min="0"></td>';
+  document.getElementById('sets-body').appendChild(tr);
   lucide.createIcons();
 }
 
-function saveLog(){
-  const entry={
-    date:todayStr(),
-    weight:document.getElementById('log-weight').value,
-    sleep:document.getElementById('log-sleep').value,
-    calories:document.getElementById('log-calories').value,
-    protein:document.getElementById('log-protein').value,
-    carbs:document.getElementById('log-carbs').value,
-    fat:document.getElementById('log-fat').value,
-    exercise:document.getElementById('log-exercise').value,
-    sets:[]
-  };
-  const rows=document.querySelectorAll('#sets-body tr');
-  rows.forEach((r,i)=>{
-    const inputs=r.querySelectorAll('input');
-    entry.sets.push({set:i+1,reps:inputs[0].value,kg:inputs[1].value});
-  });
-  const logs=JSON.parse(localStorage.getItem('zero_logs')||'[]');
-  logs.push(entry);
-  localStorage.setItem('zero_logs',JSON.stringify(logs));
-  const btn=document.querySelector('.save-btn');
-  btn.textContent='SAVED';
-  setTimeout(()=>{btn.textContent='SAVE';},1500);
+async function saveLog() {
+  if (!currentUser) return;
+  const btn = document.getElementById('save-btn');
+  btn.textContent = 'SAVING...'; btn.disabled = true;
+  const today = todayStr();
+  const { error } = await sb.from('daily_logs').upsert({
+    user_id: currentUser.id, date: today,
+    weight: parseFloat(document.getElementById('log-weight').value)||null,
+    sleep_hours: parseFloat(document.getElementById('log-sleep').value)||null,
+    calories: parseInt(document.getElementById('log-calories').value)||null,
+    protein: parseInt(document.getElementById('log-protein').value)||null,
+    carbs: parseInt(document.getElementById('log-carbs').value)||null,
+    fat: parseInt(document.getElementById('log-fat').value)||null,
+  }, { onConflict:'user_id,date' });
+  const exName = document.getElementById('log-exercise').value.trim();
+  if (exName) {
+    const { data:ws, error:wsErr } = await sb.from('workout_sessions')
+      .insert({ user_id:currentUser.id, date:today, exercise_name:exName })
+      .select().single();
+    if (!wsErr && ws) {
+      const sets = [];
+      document.querySelectorAll('#sets-body tr').forEach((r,i) => {
+        const inp = r.querySelectorAll('input');
+        const reps = parseInt(inp[0].value)||0, kg = parseFloat(inp[1].value)||0;
+        if (reps||kg) sets.push({ session_id:ws.id, set_number:i+1, reps, weight_kg:kg });
+      });
+      if (sets.length) await sb.from('session_sets').insert(sets);
+    }
+  }
+  btn.disabled = false;
+  btn.textContent = error ? 'ERROR' : 'SAVED';
+  setTimeout(()=>{ btn.textContent='SAVE'; }, 1500);
 }
 
-function sendChat(){
-  const input=document.getElementById('chat-input');
-  const val=input.value.trim();
-  if(!val)return;
-  const msgs=document.getElementById('chat-messages');
-  const userDiv=document.createElement('div');
-  userDiv.className='chat-message user-msg';
-  userDiv.textContent=val;
-  msgs.appendChild(userDiv);
-  input.value='';
-  const reply=document.createElement('div');
-  reply.className='chat-message system';
-  reply.textContent='API not connected. Add your Claude API key to activate.';
-  msgs.appendChild(reply);
-  msgs.scrollTop=msgs.scrollHeight;
+async function loadStats() {
+  if (!currentUser) return;
+  const el = document.getElementById('stats-content');
+  el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#6B5C47;font-size:11px;letter-spacing:4px;font-weight:700;">LOADING...</div>';
+  const [{ data: logs }, { data: sessions }] = await Promise.all([
+    sb.from('daily_logs').select('date,weight,sleep_hours,calories')
+      .eq('user_id',currentUser.id).gte('date',nDaysAgo(30)).order('date',{ascending:true}),
+    sb.from('workout_sessions').select('id,date,exercise_name,session_sets(count)')
+      .eq('user_id',currentUser.id).order('date',{ascending:false}).limit(5)
+  ]);
+  if ((!logs||logs.length===0) && (!sessions||sessions.length===0)) {
+    el.innerHTML = '<div class="stats-placeholder"><i data-lucide="bar-chart-2"></i><div class="label">NO DATA YET</div></div>';
+    lucide.createIcons(); return;
+  }
+  const vW = (logs||[]).filter(d=>d.weight!=null).map(d=>d.weight);
+  const vS = (logs||[]).filter(d=>d.sleep_hours!=null).map(d=>d.sleep_hours);
+  const vC = (logs||[]).filter(d=>d.calories!=null).map(d=>d.calories);
+  const avg = a => a.length ? (a.reduce((x,y)=>x+y,0)/a.length).toFixed(1) : '—';
+  const last14 = [];
+  for (let i=13;i>=0;i--) {
+    const ds = nDaysAgo(i);
+    const entry = (logs||[]).find(d=>d.date===ds);
+    last14.push({ date:ds, weight:entry?entry.weight:null });
+  }
+  const wVals = last14.filter(d=>d.weight!=null).map(d=>d.weight);
+  const minW = wVals.length?Math.min(...wVals):60, maxW = wVals.length?Math.max(...wVals):61;
+  const rng = maxW-minW||1;
+  const barsHtml = last14.map(d=>{
+    const cls = d.weight==null?'chart-bar-el empty':'chart-bar-el';
+    const h = d.weight==null?8:Math.round(10+((d.weight-minW)/rng)*65);
+    return '<div class="'+cls+'" style="height:'+h+'px"></div>';
+  }).join('');
+  const labelsHtml = last14.map(d=>'<div class="chart-label-el">'+d.date.slice(8)+'</div>').join('');
+  const sessionsHtml = (sessions||[]).length ? (sessions||[]).map(s=>{
+    const cnt = s.session_sets?.[0]?.count ?? 0;
+    const d = s.date ? s.date.slice(5).replace('-','/') : '';
+    return '<div class="workout-row"><span class="workout-name">'+s.exercise_name+'</span><span class="workout-meta">'+d+' · '+cnt+' sets</span></div>';
+  }).join('') : '<div style="font-size:11px;color:#6B5C47;padding:8px 0;">No sessions logged yet.</div>';
+  el.innerHTML =
+    '<div class="card"><div class="section-title">30-DAY AVERAGES</div>'
+    +'<div class="stats-metrics">'
+    +'<div class="metric-card"><div class="metric-value">'+avg(vW)+'</div><div class="metric-label">KG</div></div>'
+    +'<div class="metric-card"><div class="metric-value">'+avg(vS)+'</div><div class="metric-label">HRS SLEEP</div></div>'
+    +'<div class="metric-card"><div class="metric-value">'+avg(vC)+'</div><div class="metric-label">KCAL</div></div>'
+    +'</div></div>'
+    +'<div class="card"><div class="section-title">WEIGHT — LAST 14 DAYS</div>'
+    +'<div class="chart-bars">'+barsHtml+'</div>'
+    +'<div class="chart-labels">'+labelsHtml+'</div></div>'
+    +'<div class="card"><div class="section-title">RECENT WORKOUTS</div>'+sessionsHtml+'</div>';
+  lucide.createIcons();
 }
 
-renderToday();
-lucide.createIcons();
+function openSettingsModal() {
+  const modal = document.getElementById('settings-modal');
+  modal.style.display = 'flex';
+  document.getElementById('modal-key-input').value = '';
+  document.getElementById('modal-current-key').textContent = claudeApiKey
+    ? '••••••••' + claudeApiKey.slice(-4) : 'Not set';
+}
+
+function closeSettingsModal() {
+  document.getElementById('settings-modal').style.display = 'none';
+}
+
+async function saveApiKeyModal() {
+  const k = document.getElementById('modal-key-input').value.trim();
+  if (!k || !currentUser) return;
+  const { error } = await sb.from('profiles')
+    .upsert({ id:currentUser.id, claude_api_key:k }, { onConflict:'id' });
+  if (!error) {
+    claudeApiKey = k;
+    closeSettingsModal();
+    addMsg('system','API key updated. Ready.');
+  }
+}
+
+function addMsg(type, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-message '+(type==='user'?'user-msg':'system');
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const val = input.value.trim();
+  if (!val) return;
+  if (!claudeApiKey) { addMsg('system','No API key. Tap the settings icon to add your Claude API key.'); return; }
+  addMsg('user', val);
+  input.value = '';
+  const btn = document.getElementById('chat-send-btn');
+  btn.disabled = true;
+  const thinking = addMsg('system','...');
+  let recentData = [];
+  if (currentUser) {
+    const { data } = await sb.from('daily_logs')
+      .select('date,weight,sleep_hours,calories,protein,check_creatine,check_workout,check_weight,check_sleep,check_calories')
+      .eq('user_id',currentUser.id).gte('date',nDaysAgo(7)).order('date',{ascending:false});
+    recentData = data||[];
+  }
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':claudeApiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:500,
+        system:'You are ZERO, a brutally honest personal fitness coach. Be concise and direct. User data last 7 days: '+JSON.stringify(recentData),
+        messages:[{role:'user',content:val}]
+      })
+    });
+    const result = await res.json();
+    if (result.error) {
+      thinking.textContent = 'Error: '+result.error.message;
+    } else {
+      const txt = result.content[0].text;
+      thinking.textContent = txt;
+      if (currentUser) {
+        await sb.from('ai_insights').insert({
+          user_id:currentUser.id, date:todayStr(), type:'daily', content:txt
+        });
+      }
+    }
+  } catch(e) {
+    thinking.textContent = 'Connection error. Check your API key and network.';
+  }
+  btn.disabled = false;
+  document.getElementById('chat-messages').scrollTop = 999999;
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-ai').style.display = 'none';
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if (name==='ai') {
+    document.getElementById('screen-ai').style.display = 'flex';
+  } else {
+    document.getElementById('screen-'+name).classList.add('active');
+    if (name==='stats') loadStats();
+  }
+}
+
+init();
 </script>
 </body>
 </html>
