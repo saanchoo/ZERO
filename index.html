@@ -349,7 +349,7 @@ html,body{height:100%;background:#E8DCC8;font-family:'Courier New',monospace;col
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://hfivnuybvuxbysmmergd.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0MDgyOTQsImV4cCI6MjA2NDk4NDI5NH0.aTgkKHTv99SUTqRZ5nQ5tGWFmKuol1PMqvSalIk6vJE';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmaXZudXlidnV4YnlzbW1lcmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MzA3ODMsImV4cCI6MjA5NjUwNjc4M30.oQkWPqUuip_NqijjX2cz8fIQqLVcpH332nUo9UI3xl8';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -425,7 +425,18 @@ async function login() {
   btn.textContent = 'SIGNING IN...'; btn.disabled = true; errEl.textContent = '';
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
   btn.textContent = 'LOGIN'; btn.disabled = false;
-  if (error) { errEl.textContent = error.message; }
+  if (error) {
+    const m = error.message || '';
+    let msg;
+    if (m.includes('Email not confirmed')) {
+      msg = 'Confirma tu email primero';
+    } else if (m.includes('Invalid API key') || m.includes('invalid_grant') || m.toLowerCase().includes('invalid')) {
+      msg = 'Email o contraseña incorrectos';
+    } else {
+      msg = 'Error al iniciar sesión. Inténtalo de nuevo.';
+    }
+    errEl.textContent = msg;
+  }
   else { currentUser = data.user; await onLoginSuccess(); }
 }
 
